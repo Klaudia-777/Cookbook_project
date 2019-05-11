@@ -4,10 +4,11 @@ public class WrongUrlFormatException extends Exception {
     private String message;
     private GlobalFunctions service = new GlobalFunctions();
 
-    WrongUrlFormatException(String message){
-        this.message=message;
+    WrongUrlFormatException(String message) {
+        this.message = message;
     }
-    void handleException(){
+
+    void handleException() {
         service.setExceptionFrame(message);
     }
 

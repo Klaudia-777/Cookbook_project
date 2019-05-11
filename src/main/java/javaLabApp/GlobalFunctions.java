@@ -6,6 +6,11 @@ import java.util.List;
 
 class GlobalFunctions {
 
+    void setButtonColor(JButton button,Color color){
+        button.setBackground(color);
+        button.setOpaque(true);
+    }
+
     void setFont(JComponent component) {
         Font namelabelFont = component.getFont().deriveFont(Font.PLAIN, 20f);
         component.setFont(namelabelFont);

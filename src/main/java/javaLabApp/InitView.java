@@ -14,10 +14,12 @@ public class InitView {
         addManuallyButton = new JButton("<html>Add your<br />own recipe</html>");
         addManuallyButton.addActionListener(chooseAnOptionActionListener);
         addManuallyButton.setBounds(20, 100, 150, 100);
+        service.setButtonColor(addManuallyButton,Color.GREEN.brighter());
 
         addFromSiteButton = new JButton("<html>Add recipe<br />from the website</html>");
         addFromSiteButton.addActionListener(chooseAnOptionActionListener);
         addFromSiteButton.setBounds(220, 100, 150, 100);
+        service.setButtonColor(addFromSiteButton,Color.GREEN.brighter());
 
         service.setFontOfComponent(Arrays.asList(new JComponent[]{
                 addManuallyButton,
@@ -33,9 +35,9 @@ public class InitView {
 
     private void createAndShowGUI() {
         JFrame jf = new JFrame("Add a Recipe to your base");
-        JPanel jPanel = new JPanel();
-
+        JPanel jPanel = new ImagePanel("pic.jpg");
         jPanel.setLayout(null);
+
         setPane(jPanel);
         jf.getContentPane().add(jPanel);
 
@@ -47,7 +49,6 @@ public class InitView {
         jf.setSize(400, 400);
         jf.setLocation(dim.width / 2 - jf.getSize().width / 2, dim.height / 2 - jf.getSize().height / 2);
         jf.setResizable(false);
-
     }
 
     private InitView() {

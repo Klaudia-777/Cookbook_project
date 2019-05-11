@@ -19,13 +19,15 @@ public class OwnRecipeService implements ActionListener {
 
         JFrame jf = new JFrame("Add your own recipe");
         GridLayout gridLayout = new GridLayout(7, 1);
-        JPanel jPanel = new JPanel(gridLayout);
+        JPanel jPanel = new ImagePanel("picManually.jpg");
+        jPanel.setLayout(gridLayout);
 
         JLabel nameLabel = new JLabel("Enter name:");
         JLabel ingridientsLabel = new JLabel("Enter ingridients:");
         JLabel instructionsLabel = new JLabel("Enter instructions:");
 
         addRecipeButton.addActionListener(chooseAnOptionActionListener);
+        service.setButtonColor(addRecipeButton,Color.PINK);
 
         nameTextField.addActionListener(chooseAnOptionActionListener);
         ingridientsTextField.addActionListener(chooseAnOptionActionListener);

@@ -28,17 +28,15 @@ public class ParserRecipeService implements ActionListener {
 
         if (urlPattern.matcher(urlToCheck).matches()) {
             try {
-                //System.out.println(parseRecipeNameFromWebsite(urlToCheck));
-                //parseIngridientsFromWebsite(urlToCheck);
                 parseInstructionsFromWebsite(urlToCheck);
             } catch (HttpStatusException h) {
-               service.setExceptionFrame("URL doesn't exist!");
+                service.setExceptionFrame("URL doesn't exist!");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                throw(new WrongUrlFormatException("Wrong URL Format!"));
+                throw (new WrongUrlFormatException("Wrong URL Format!"));
             } catch (WrongUrlFormatException e) {
                 e.handleException();
             }
@@ -67,25 +65,6 @@ public class ParserRecipeService implements ActionListener {
 
     String parseInstructionsFromWebsite(String websiteAddress) throws IOException {
 
-//	   String prepare =Jsoup.connect(websiteAddress).get()
-//			   .select("body")
-//			   .select("main")
-//			   .select("content").first()
-//			   .select("div[class=recipe_inner right]")
-//			   .select("div[class=recipe_main]")
-//			   .select("div[id=opis]")
-//			   .select("h2").first().text();
-//	   
-//	   List<String> toPrepare =Jsoup.connect(websiteAddress).get()
-//			   .select("body")
-//			   .select("main")
-//			   .select("content").first()
-//			   .select("div[class=recipe_inner right]")
-//			   .select("div[class=recipe_main]")
-//			   .select("div[id=opis]")
-//			   .select("ul").first()
-//			   .select("li").eachText();
-
         List<String> instructions = Jsoup.connect(websiteAddress).get()
                 .select("body")
                 .select("main")
@@ -96,8 +75,6 @@ public class ParserRecipeService implements ActionListener {
                 .select("p").eachText();
 
         StringBuilder sb = new StringBuilder();
-        //  sb.append(prepare).append("\n")
-        //	.append(toPrepare.stream().collect(Collectors.joining("\n"))).append("\n")
         sb.append(instructions.stream().collect(Collectors.joining("\n"))).append("\n");
 
         System.out.print(sb.toString());
@@ -108,15 +85,15 @@ public class ParserRecipeService implements ActionListener {
 
         JFrame jf = new JFrame("Add a recipe from the website");
         GridLayout gridLayout = new GridLayout(7, 1);
-        JPanel jPanel = new JPanel();
+        JPanel jPanel = new ImagePanel("picFromWebsite.jpg");
 
         jPanel.setLayout(gridLayout);
 
         parseRecipeButton.addActionListener(chooseAnOptionActionListener);
+        service.setButtonColor(parseRecipeButton,Color.PINK);
         textField.addActionListener(chooseAnOptionActionListener);
 
         JLabel label = new JLabel("Enter the website address:");
-
 
         service.setFontOfComponent(Arrays.asList(new JComponent[]{
                 parseRecipeButton,
@@ -135,8 +112,6 @@ public class ParserRecipeService implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-
         checkFormatOfUrl(textField.getText());
-
     }
 }
