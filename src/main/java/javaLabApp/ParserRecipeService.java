@@ -20,10 +20,14 @@ public class ParserRecipeService implements ActionListener {
 
     private GlobalFunctions service = new GlobalFunctions();
     private JTextField textField = new JTextField();
+    private String parsedInstruction="";
     JButton parseRecipeButton = new JButton("Add");
 
+    public String getParsedInstruction() {
+        return parsedInstruction;
+    }
 
-    public void checkFormatOfUrl(String urlToCheck) {
+    public ParserRecipeService checkFormatOfUrl(String urlToCheck) {
         Pattern urlPattern = Pattern.compile("https://kuchnialidla.pl/.*");
 
         if (urlPattern.matcher(urlToCheck).matches()) {
@@ -41,6 +45,7 @@ public class ParserRecipeService implements ActionListener {
                 e.handleException();
             }
         }
+        return this;
     }
 
     String parseRecipeNameFromWebsite(String websiteAddress) throws IOException {
@@ -77,7 +82,9 @@ public class ParserRecipeService implements ActionListener {
         StringBuilder sb = new StringBuilder();
         sb.append(instructions.stream().collect(Collectors.joining("\n"))).append("\n");
 
-        System.out.print(sb.toString());
+        System.out.println(sb.toString()+"\n");
+        parsedInstruction=sb.toString();
+
         return sb.toString();
     }
 
