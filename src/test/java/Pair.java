@@ -1,5 +1,3 @@
-package javaLabApp;
-
 public class Pair {
     private String input;
     private boolean expextedResult;

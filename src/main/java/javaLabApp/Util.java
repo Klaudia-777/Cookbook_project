@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-class GlobalFunctions {
+class Util {
 
     void setButtonColor(JButton button,Color color){
         button.setBackground(color);

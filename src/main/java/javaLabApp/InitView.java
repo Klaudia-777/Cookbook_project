@@ -5,8 +5,9 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class InitView {
-    private final ChooseAnOptionActionListener chooseAnOptionActionListener = new ChooseAnOptionActionListener(this);
-    private GlobalFunctions service = new GlobalFunctions();
+    private  final ChooseAnOptionActionListener chooseAnOptionActionListener = new ChooseAnOptionActionListener(this);
+
+    private Util service = new Util();
     private JButton addManuallyButton;
     private JButton addFromSiteButton;
 
@@ -59,7 +60,7 @@ public class InitView {
     public static void main(String[] args) {
         SwingUtilities.invokeLater((new Runnable() {
             public void run() {
-                new InitView();
+                 new InitView();
             }
         }));
     }

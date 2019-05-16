@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OwnRecipeService implements ActionListener {
-    private GlobalFunctions service = new GlobalFunctions();
+    private Util service = new Util();
     JButton addRecipeButton = new JButton("Add recipe");
 
     private JTextField nameTextField = new JTextField();

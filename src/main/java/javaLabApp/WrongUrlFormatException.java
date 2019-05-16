@@ -2,7 +2,7 @@ package javaLabApp;
 
 public class WrongUrlFormatException extends Exception {
     private String message;
-    private GlobalFunctions service = new GlobalFunctions();
+    private Util service = new Util();
 
     WrongUrlFormatException(String message) {
         this.message = message;
