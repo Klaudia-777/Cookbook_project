@@ -1,5 +1,7 @@
 package javaLabApp;
 
+import org.sqlite.SQLiteException;
+
 import java.sql.*;
 import java.util.List;
 
@@ -35,12 +37,13 @@ public class ConnectingDBAndInsertingData {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
-           // stat.executeUpdate("drop table if exists recipes;");
-            stat.executeUpdate("create table recipes (id integer primary key autoincrement, name text not null, category text not null, urlAddress text not null, instructions text not null); if not exists recipes");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//           //stat.executeUpdate("drop table if exists recipes;");
+//           stat.executeUpdate("create table recipes (id integer primary key autoincrement, name text unique not null, category text not null, urlAddress text not null, instructions text not null);");
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
         PreparedStatement prep = null;
         try {
@@ -83,8 +86,7 @@ public class ConnectingDBAndInsertingData {
                 System.out.println("instructions = " + rs.getString("instructions")+"\n");
 
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

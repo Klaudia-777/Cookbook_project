@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -40,31 +41,30 @@ public class ParserRecipeService implements ActionListener {
         return parsedImageUrl;
     }
 
-
     public ParserRecipeService checkFormatOfUrl(String urlToCheck) {
         Pattern urlPattern = Pattern.compile("https://kuchnialidla.pl/.*");
 
         if (urlPattern.matcher(urlToCheck).matches()) {
-            try {
-                connectingDBAndInsertingData.createConnection();
-                connectingDBAndInsertingData.insertData(Arrays.asList(
 
-                        parseRecipeNameFromWebsite(urlToCheck),
-                        parseCategory(urlToCheck),
-                        parseImageUrl(urlToCheck),
-                        parseInstructionsFromWebsite(urlToCheck)));
+                try {
+                    connectingDBAndInsertingData.createConnection();
+                    connectingDBAndInsertingData.insertData(Arrays.asList(
+                            parseRecipeNameFromWebsite(urlToCheck),
+                            parseCategory(urlToCheck),
+                            parseImageUrl(urlToCheck),
+                            parseInstructionsFromWebsite(urlToCheck)));
 
-                connectingDBAndInsertingData.readData();
-                connectingDBAndInsertingData.closeConnection();
+                    connectingDBAndInsertingData.readData();
+                    connectingDBAndInsertingData.closeConnection();
 
 
-                //parseIngridientsFromWebsite(urlToCheck);
+                    //parseIngridientsFromWebsite(urlToCheck);
 
-            } catch (HttpStatusException h) {
-                service.setExceptionFrame("URL doesn't exist!");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                } catch (HttpStatusException h) {
+                    service.setExceptionFrame("URL doesn't exist!");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
         } else {
             try {
                 throw (new WrongUrlFormatException("Wrong URL Format!"));
@@ -85,7 +85,8 @@ public class ParserRecipeService implements ActionListener {
                 .select("head").first()
                 .select("title").first()
                 .text();
-//        System.out.println(title);
+
+        //        System.out.println(title);
         return title;
     }
 
