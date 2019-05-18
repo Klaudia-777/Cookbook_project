@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,52 +18,54 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ParserRecipeService implements ActionListener {
-    private ConnectingDBAndInsertingData connectingDBAndInsertingData = new ConnectingDBAndInsertingData();
+    private CookbookDBService cookbookDBService = new CookbookDBService();
 
+    private List<String> usedUrls= new ArrayList<>();
     private Util service = new Util();
     private JTextField textField = new JTextField();
     JButton parseRecipeButton = new JButton("Add");
 
-    private String parsedInstruction = "";
-    private String parsedCategory = "";
-    private String parsedImageUrl = "";
 
-    public String getParsedInstruction() {
-        return parsedInstruction;
-    }
 
-    public String getParsedCategory() {
-        return parsedCategory;
-    }
-
-    public String getParsedImageUrl() {
-        return parsedImageUrl;
-    }
-
-    public ParserRecipeService checkFormatOfUrl(String urlToCheck) {
+    private ParserRecipeService checkFormatOfUrl(String urlToCheck) {
         Pattern urlPattern = Pattern.compile("https://kuchnialidla.pl/.*");
 
         if (urlPattern.matcher(urlToCheck).matches()) {
 
-                try {
-                    connectingDBAndInsertingData.createConnection();
-                    connectingDBAndInsertingData.insertData(Arrays.asList(
-                            parseRecipeNameFromWebsite(urlToCheck),
-                            parseCategory(urlToCheck),
-                            parseImageUrl(urlToCheck),
-                            parseInstructionsFromWebsite(urlToCheck)));
+            try {
+//                parseRecipeNameFromWebsite(urlToCheck);
+//                parseCategory(urlToCheck);
 
-                    connectingDBAndInsertingData.readData();
-                    connectingDBAndInsertingData.closeConnection();
+                cookbookDBService.createConnection();
 
+//                cookbookDBService.dropTables();
 
-                    //parseIngridientsFromWebsite(urlToCheck);
-
-                } catch (HttpStatusException h) {
-                    service.setExceptionFrame("URL doesn't exist!");
-                } catch (IOException e) {
-                    e.printStackTrace();
+                cookbookDBService.createTables();
+                cookbookDBService.insertDataIntoRecipesTable(Arrays.asList(
+                        parseRecipeNameFromWebsite(urlToCheck),
+                        parseCategory(urlToCheck),
+                        parseImageUrl(urlToCheck),
+                        parseInstructionsFromWebsite(urlToCheck)));
+                if(!usedUrls.contains(urlToCheck)){
+                for (String ingridient : parseIngridientsFromWebsite(urlToCheck)) {
+                    cookbookDBService.insertDataIntoIngridientsTable(Arrays.asList(
+                            ingridient,
+                            parseRecipeNameFromWebsite(urlToCheck)
+                    ));
                 }
+                }
+
+                cookbookDBService.readDataRecipes();
+                cookbookDBService.readDataIngridients();
+                cookbookDBService.closeConnection();
+
+                usedUrls.add(urlToCheck);
+
+            } catch (HttpStatusException h) {
+                service.setExceptionFrame("URL doesn't exist!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             try {
                 throw (new WrongUrlFormatException("Wrong URL Format!"));
@@ -79,7 +80,7 @@ public class ParserRecipeService implements ActionListener {
      * PARSING NAME
      */
 
-    String parseRecipeNameFromWebsite(String websiteAddress) throws IOException {
+    public String parseRecipeNameFromWebsite(String websiteAddress) throws IOException {
         String title = Jsoup.connect(websiteAddress)
                 .get()
                 .select("head").first()
@@ -95,7 +96,6 @@ public class ParserRecipeService implements ActionListener {
      */
 
     String parseCategory(String websiteAddress) throws IOException {
-        parsedCategory = "";
         String category = Jsoup.connect(websiteAddress).get()
                 .select("body")
                 .select("main")
@@ -109,7 +109,6 @@ public class ParserRecipeService implements ActionListener {
                 .attr("abs:href")
                 .substring(33);
         category = category.substring(0, category.indexOf('/'));
-        parsedCategory = category;
 //        System.out.println(category);
         return category;
     }
@@ -141,7 +140,6 @@ public class ParserRecipeService implements ActionListener {
      */
 
     String parseInstructionsFromWebsite(String websiteAddress) throws IOException {
-        parsedInstruction = "";
         List<String> instructions = Jsoup.connect(websiteAddress).get()
                 .select("body")
                 .select("main")
@@ -155,7 +153,6 @@ public class ParserRecipeService implements ActionListener {
         sb.append(String.join("\n", instructions)).append("\n");
 
 //        System.out.println(sb.toString() + "\n");
-        parsedInstruction = sb.toString();
 
         return sb.toString();
     }
@@ -165,7 +162,6 @@ public class ParserRecipeService implements ActionListener {
      */
 
     String parseImageUrl(String websiteAddress) throws IOException {
-        parsedImageUrl = "";
         String imageUrl = Jsoup.connect(websiteAddress).get()
                 .select("body")
                 .select("main")
@@ -173,7 +169,6 @@ public class ParserRecipeService implements ActionListener {
                 .select("div").first()
                 .select("div").first()
                 .select("img").attr("abs:src");
-        parsedImageUrl = imageUrl;
 //        System.out.println(imageUrl);
         return imageUrl;
     }
