@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -39,11 +40,8 @@ public class ParsingInstructionsTest {
         }
 
         @Test
-        public void testMyActionListenerScenarios() {
-            // Assertions.assertEquals(expectedResult, !parserRecipeService.checkFormatOfUrl(input).getParsedInstruction().equals(""));
-            // Assertions.assertEquals(expectedResult, !parserRecipeService.checkFormatOfUrl(input).getParsedCategory().equals(""));
-            Assertions.assertEquals(expectedResult, !parserRecipeService.checkFormatOfUrl(input).getParsedImageUrl().equals(""));
-
+        public void testMyActionListenerScenarios() throws IOException {
+            Assertions.assertEquals(expectedResult, !parserRecipeService.parseRecipeNameFromWebsite(input).equals(""));
         }
     }
 }

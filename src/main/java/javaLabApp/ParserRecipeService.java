@@ -27,36 +27,38 @@ public class ParserRecipeService implements ActionListener {
 
 
 
-    private ParserRecipeService checkFormatOfUrl(String urlToCheck) {
+    private ParserRecipeService insertRecipeToDB(String urlToCheck) {
         Pattern urlPattern = Pattern.compile("https://kuchnialidla.pl/.*");
 
         if (urlPattern.matcher(urlToCheck).matches()) {
 
             try {
-//                parseRecipeNameFromWebsite(urlToCheck);
-//                parseCategory(urlToCheck);
+                parseRecipeNameFromWebsite(urlToCheck);
+                parseCategory(urlToCheck);
 
                 cookbookDBService.createConnection();
 
 //                cookbookDBService.dropTables();
 
                 cookbookDBService.createTables();
-                cookbookDBService.insertDataIntoRecipesTable(Arrays.asList(
-                        parseRecipeNameFromWebsite(urlToCheck),
-                        parseCategory(urlToCheck),
-                        parseImageUrl(urlToCheck),
-                        parseInstructionsFromWebsite(urlToCheck)));
-                if(!usedUrls.contains(urlToCheck)){
-                for (String ingridient : parseIngridientsFromWebsite(urlToCheck)) {
-                    cookbookDBService.insertDataIntoIngridientsTable(Arrays.asList(
-                            ingridient,
-                            parseRecipeNameFromWebsite(urlToCheck)
-                    ));
-                }
-                }
-
-                cookbookDBService.readDataRecipes();
-                cookbookDBService.readDataIngridients();
+                cookbookDBService.filterRecipesByCategory("zupy");
+                cookbookDBService.filterRecipesByIngridients("czosnek");
+//                cookbookDBService.insertDataIntoRecipesTable(Arrays.asList(
+//                        parseRecipeNameFromWebsite(urlToCheck),
+//                        parseCategory(urlToCheck),
+//                        parseImageUrl(urlToCheck),
+//                        parseInstructionsFromWebsite(urlToCheck)));
+//                if(!usedUrls.contains(urlToCheck)){
+//                for (String ingridient : parseIngridientsFromWebsite(urlToCheck)) {
+//                    cookbookDBService.insertDataIntoIngridientsTable(Arrays.asList(
+//                            ingridient,
+//                            parseRecipeNameFromWebsite(urlToCheck)
+//                    ));
+//                }
+//                }
+//
+//                cookbookDBService.readDataRecipes();
+//                cookbookDBService.readDataIngridients();
                 cookbookDBService.closeConnection();
 
                 usedUrls.add(urlToCheck);
@@ -204,6 +206,6 @@ public class ParserRecipeService implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        checkFormatOfUrl(textField.getText());
+        insertRecipeToDB(textField.getText());
     }
 }

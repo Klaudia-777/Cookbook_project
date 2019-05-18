@@ -16,7 +16,7 @@ public class CookbookDBService {
         return rsRecipes;
     }
 
-    public void createConnection() {
+    void createConnection() {
         try {
             Class.forName("org.sqlite.JDBC");
             System.out.println("INFO: Driver was found.");
@@ -47,7 +47,7 @@ public class CookbookDBService {
         }
     }
     
-    public void createTables() {
+    void createTables() {
         try {
             stat = conn.createStatement();
         } catch (SQLException e) {
@@ -71,7 +71,7 @@ public class CookbookDBService {
         }
     }
 
-    public void insertDataIntoRecipesTable(List<String> data) {
+    void insertDataIntoRecipesTable(List<String> data) {
         PreparedStatement prep = null;
         try {
             prep = conn.prepareStatement("insert into recipes(name,category,urlAddress,instructions) values (?, ?, ?, ?);");
@@ -93,7 +93,7 @@ public class CookbookDBService {
         }
     }
 
-    public void insertDataIntoIngridientsTable(List<String> data) {
+    void insertDataIntoIngridientsTable(List<String> data) {
         PreparedStatement prep = null;
         try {
             prep = conn.prepareStatement("insert into ingridients(name,recipes_name) values (?, ?);");
@@ -113,7 +113,7 @@ public class CookbookDBService {
         }
     }
 
-    public void readDataRecipes() {
+    void readDataRecipes() {
         try {
             stat = conn.createStatement();
         } catch (SQLException e) {
@@ -134,7 +134,7 @@ public class CookbookDBService {
         }
     }
 
-    public void readDataIngridients() {
+    void readDataIngridients() {
         try {
             stat = conn.createStatement();
         } catch (SQLException e) {
@@ -152,8 +152,54 @@ public class CookbookDBService {
             e.printStackTrace();
         }
     }
-    
-    public void closeConnection() {
+
+    void filterRecipesByCategory(String categoryCriteria) {
+        try {
+            rsRecipes = stat.executeQuery("select name " +
+                    "from recipes " +
+                    "where category = '"+categoryCriteria+"';");
+            while (rsRecipes.next()) {
+                System.out.println("name = " + rsRecipes.getString("name") + ",  " + "\n");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void filterRecipesByIngridients(String ingridientCriteria) {
+        try {
+            rsRecipes = stat.executeQuery("select recipes.name " +
+                    "from recipes " +
+                    "inner join ingridients " +
+                    "on recipes.name=ingridients.recipes_name " +
+                    "where ingridients.name " +
+                    "LIKE '%"+ingridientCriteria+"%';");
+            while (rsRecipes.next()) {
+                System.out.println("name= " + rsRecipes.getString("name") + ",  " + "\n");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void filterByCategoriesAndIngridients(String categoryCriteria, String ingridientCriteria){
+        try {
+            rsRecipes = stat.executeQuery("select recipes.name " +
+                    "from recipes " +
+                    "inner join ingridients " +
+                    "on recipes.name=ingridients.recipes_name " +
+                    "where ingridients.name " +
+                    "LIKE '%"+ingridientCriteria+"%'" +
+                    "and recipes.category = '"+categoryCriteria+"';");
+
+            while (rsRecipes.next()) {
+                System.out.println("name= " + rsRecipes.getString("name") + ",  " + "\n");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    void closeConnection() {
         try {
             conn.close();
             System.out.println("INFO: Connection was closed.");

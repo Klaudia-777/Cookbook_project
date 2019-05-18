@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 public class ChooseAnOptionActionListener implements ActionListener {
     private ParserRecipeService parserRecipeService = new ParserRecipeService();
     private OwnRecipeService ownRecipeService = new OwnRecipeService();
+    private FilterRecipesService filterRecipesService = new FilterRecipesService();
 
     ChooseAnOptionActionListener(InitView initView) {
         InitView initView1 = initView;
@@ -20,6 +21,10 @@ public class ChooseAnOptionActionListener implements ActionListener {
         } else if ("<html>Add recipe<br />from the website</html>".equals(pressedButton)) {
             parserRecipeService.createAndShowGUIForParsedRecipe(this);
             parserRecipeService.parseRecipeButton.addActionListener(parserRecipeService);
+        }
+        else if ("<html>Filter</html>".equals(pressedButton)) {
+            filterRecipesService.createAndShowGUIForParsedRecipe(this);
+            filterRecipesService.filterButton.addActionListener(filterRecipesService);
         }
     }
 }

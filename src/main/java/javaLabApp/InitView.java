@@ -5,38 +5,51 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class InitView {
-    private  final ChooseAnOptionActionListener chooseAnOptionActionListener = new ChooseAnOptionActionListener(this);
+    private final ChooseAnOptionActionListener chooseAnOptionActionListener = new ChooseAnOptionActionListener(this);
 
     private Util service = new Util();
     private JButton addManuallyButton;
     private JButton addFromSiteButton;
+    private JButton addFilteringButton;
+
 
     private void setButtons() {
+
         addManuallyButton = new JButton("<html>Add your<br />own recipe</html>");
         addManuallyButton.addActionListener(chooseAnOptionActionListener);
-        addManuallyButton.setBounds(20, 100, 150, 100);
-        service.setButtonColor(addManuallyButton,Color.GREEN.brighter());
+        addManuallyButton.setBounds(20, 60, 150, 100);
+        service.setButtonColor(addManuallyButton, Color.GREEN.brighter());
 
         addFromSiteButton = new JButton("<html>Add recipe<br />from the website</html>");
         addFromSiteButton.addActionListener(chooseAnOptionActionListener);
-        addFromSiteButton.setBounds(220, 100, 150, 100);
-        service.setButtonColor(addFromSiteButton,Color.GREEN.brighter());
+        addFromSiteButton.setBounds(220, 60, 150, 100);
+        service.setButtonColor(addFromSiteButton, Color.GREEN.brighter());
+
+        addFilteringButton = new JButton("<html>Filter</html>");
+        addFilteringButton.addActionListener(chooseAnOptionActionListener);
+        addFilteringButton.setBounds(120, 270, 150, 70);
+        service.setButtonColor(addFilteringButton, Color.GREEN.brighter());
 
         service.setFontOfComponent(Arrays.asList(new JComponent[]{
                 addManuallyButton,
-                addFromSiteButton})
+                addFromSiteButton,
+                addFilteringButton})
         );
     }
 
     private void setPane(Container pane) {
         setButtons();
+
         pane.add(addManuallyButton);
         pane.add(addFromSiteButton);
+        pane.add(addFilteringButton);
+
     }
 
     private void createAndShowGUI() {
         JFrame jf = new JFrame("Add a Recipe to your base");
         JPanel jPanel = new ImagePanel("pic.jpg");
+
         jPanel.setLayout(null);
 
         setPane(jPanel);
@@ -60,7 +73,7 @@ public class InitView {
     public static void main(String[] args) {
         SwingUtilities.invokeLater((new Runnable() {
             public void run() {
-                 new InitView();
+                new InitView();
             }
         }));
     }
