@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
-public class OwnRecipeService implements ActionListener {
+public class OwnRecipeServiceActionListener implements ActionListener {
     private Util service = new Util();
     JButton addRecipeButton = new JButton("Add recipe");
 
@@ -60,15 +60,7 @@ public class OwnRecipeService implements ActionListener {
         if (!name.isEmpty() && !ingridients.isEmpty() && !instructions.isEmpty()) {
             System.out.println(name + "\n" + ingridients + "\n" + instructions);
         } else {
-            JFrame fillAllFieldsFrame = new JFrame();
-
-            JLabel label = new JLabel("You need to fill all of the fields!");
-            label.setForeground(Color.red);
-            service.setFont(label);
-
-            fillAllFieldsFrame.getContentPane().add(label);
-            fillAllFieldsFrame.setSize(300, 100);
-            service.setJFrame(fillAllFieldsFrame);
+           service.setExceptionFrame("Fill all of the fields!");
         }
     }
 }

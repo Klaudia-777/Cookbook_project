@@ -6,20 +6,35 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
-public class FilterRecipesService implements ActionListener {
+public class FilterRecipesActionListener implements ActionListener {
     private CookbookDBService cookbookDBService = new CookbookDBService();
     private Util service = new Util();
-
-    private JTextField filterByCategory = new JTextField();
-    private JTextField filterByIngridient = new JTextField();
+    private JFrame jf = new JFrame("Filter");
 
     JButton filterButton = new JButton("Search");
+    private JTextField filterByIngridient = new JTextField();
+    private JComboBox<String> filterByCategory = new JComboBox<>(new String[]{"dania-glowne",
+            "zupy",
+            "salatki",
+            "napoje",
+            "przetwory",
+            "sniadania",
+            "fast-food",
+            "przekaski",
+            "ciasta",
+            "ciastka",
+            "desery"});
+
+
+    /**
+     *  CREATING GUI FOR FILTERING FRAME
+     */
+
 
     void createAndShowGUIForParsedRecipe(ChooseAnOptionActionListener chooseAnOptionActionListener) {
 
-        JFrame jf = new JFrame("Filter");
         GridLayout gridLayout = new GridLayout(8, 1);
-        JPanel jPanel = new JPanel();
+        JPanel jPanel =new ImagePanel("picFromWebsite.jpg");
         jPanel.setLayout(gridLayout);
 
         filterButton.addActionListener(chooseAnOptionActionListener);
@@ -51,21 +66,28 @@ public class FilterRecipesService implements ActionListener {
         jf.setSize(400, 400);
     }
 
+    /**
+     *  PERFORMING ACTION FROM FILTERS
+     */
+
     public void actionPerformed(ActionEvent e) {
         cookbookDBService.createConnection();
         cookbookDBService.createTables();
-        if(!filterByCategory.getText().equals("") && filterByIngridient.getText().equals("")){
-            cookbookDBService.filterRecipesByCategory(filterByCategory.getText());
-        }else  if (filterByCategory.getText().equals("") && !filterByIngridient.getText().equals("")){
-            cookbookDBService.filterRecipesByIngridients(filterByIngridient.getText());
-        }else if(!filterByCategory.getText().equals("") && !filterByIngridient.getText().equals("")){
+        String category = filterByCategory.getSelectedItem().toString();
+
+        if(!category.equals("") && filterByIngridient.getText().equals("")){
+            cookbookDBService.filterRecipesByCategory(category);
+//        }else  if (category.equals("") && !filterByIngridient.getText().equals("")){
+//            cookbookDBService.filterRecipesByIngridients(category);
+        }else if(!category.equals("") && !filterByIngridient.getText().equals("")){
             cookbookDBService.filterByCategoriesAndIngridients(
-                    filterByCategory.getText(),
+                    category,
                     filterByIngridient.getText()
             );
         }else{
-            System.out.println("Fill in at least one field!");
+            service.setExceptionFrame("You need to fill at least one field!");
         }
         cookbookDBService.closeConnection();
+
     }
 }

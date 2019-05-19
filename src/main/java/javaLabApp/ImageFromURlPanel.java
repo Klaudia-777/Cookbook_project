@@ -1,33 +1,32 @@
 package javaLabApp;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
+
+import java.io.IOException;
+import java.net.URL;
 
 /**
  *  CLASS BEING EXTENSION TO JPANEL
  *  ADDING PICTURE
- *  FROM FILE
+ *  FROM GIVEN URL ENABLED
  */
 
-public class ImagePanel extends JPanel {
 
-    private BufferedImage image;
+public class ImageFromURlPanel extends JPanel {
 
-    public ImagePanel(String pathname) {
+    private Image image;
+
+    public ImageFromURlPanel(URL pathname) {
         super();
-
-        File imageFile = new File(pathname);
         try {
-            image = ImageIO.read(imageFile);
+            image = ImageIO.read(pathname).getScaledInstance(600, 350, Image.SCALE_DEFAULT);
         } catch (IOException e) {
             System.err.println("Blad odczytu obrazka");
             e.printStackTrace();
         }
+
     }
 
     @Override

@@ -1,4 +1,4 @@
-import javaLabApp.ParserRecipeService;
+import javaLabApp.ParserRecipeServiceActionListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +14,7 @@ public class ParsingInstructionsTest {
     public static class ListenerTests {
         private String input;
         private boolean expectedResult;
-        private ParserRecipeService parserRecipeService;
+        private ParserRecipeServiceActionListener parserRecipeService;
 
         public ListenerTests(Pair parameters) {
             this.input = parameters.getInput();
@@ -23,7 +23,7 @@ public class ParsingInstructionsTest {
 
         @Before
         public void initialize() {
-            parserRecipeService = new ParserRecipeService();
+            parserRecipeService = new ParserRecipeServiceActionListener();
         }
 
         @Parameterized.Parameters

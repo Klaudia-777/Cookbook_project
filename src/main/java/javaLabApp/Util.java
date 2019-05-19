@@ -4,6 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ *  SET OF UNIVERSAL FUNCTIONS
+ *  USED IN THE WHOLE PROJECT
+ */
+
 class Util {
 
     void setButtonColor(JButton button,Color color){
