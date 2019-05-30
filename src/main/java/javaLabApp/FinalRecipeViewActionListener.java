@@ -5,8 +5,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Arrays;
 
 
@@ -14,6 +16,22 @@ public class FinalRecipeViewActionListener implements ActionListener {
     private CookbookDBService cookbookDBService = new CookbookDBService();
     private Util service = new Util();
 
+    String encoder(String url) {
+        StringBuilder result = new StringBuilder();
+        int iterator = url.length() - 1;
+        while (url.charAt(iterator) != '/') {
+            iterator--;
+        }
+        result.append(url.substring(0, iterator));
+        url = url.substring(iterator);
+
+        try {
+            result.append(URLEncoder.encode(url, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return result.toString();
+    }
 
     String editInstructions(String instructions) {
         StringBuilder edited = new StringBuilder();
@@ -35,12 +53,6 @@ public class FinalRecipeViewActionListener implements ActionListener {
         String name = e.getActionCommand();
 
         JFrame jf = new JFrame("Recipe");
-        jf.pack();
-        jf.setVisible(true);
-        jf.setSize(600, 800);
-        jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        jf.setResizable(true);
-
         JPanel topJPanel = null;
 
         cookbookDBService.createConnection();
@@ -65,23 +77,24 @@ public class FinalRecipeViewActionListener implements ActionListener {
         ingridientsTextArea.setEditable(false);
         instructionsTextArea.setEditable(false);
 
+
         try {
-            topJPanel = new ImageFromURlPanel(new URL(cookbookDBService.filterByName(name).get(2)));
+            topJPanel = new ImageFromURlPanel(new URL(encoder(cookbookDBService.filterByName(name).get(2))));
+            System.out.println(encoder(cookbookDBService.filterByName(name).get(2)));
+
             topJPanel.setSize(600, 350);
         } catch (MalformedURLException e1) {
             e1.printStackTrace();
         }
-        jf.setBackground(Color.PINK);
+
+
         jf.add(nameLabel, BorderLayout.PAGE_START);
         jf.add(label, BorderLayout.WEST);
         jf.add(ingridientsTextArea, BorderLayout.WEST);
         jf.add(topJPanel, BorderLayout.CENTER);
         jf.add(instructionsTextArea, BorderLayout.AFTER_LAST_LINE);
-        jf.setLocation(0, 0);
 
-//        for (String str:cookbookDBService.filterByName(e.getActionCommand())) {
-//            System.out.println(str);
-//        }
-
+        service.setJFrame(jf, true, true, 0, 0,
+                0, 0, true, Arrays.asList(new JComponent[]{}));
     }
 }

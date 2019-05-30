@@ -47,7 +47,7 @@ public class OwnRecipeServiceActionListener implements ActionListener {
         service.setFontOfComponent(components);
 
         jf.getContentPane().add(jPanel);
-        service.setJFrame(jf);
+    //    service.setJFrame(jf,true,true,true);
         jf.setSize(400, 600);
 
     }

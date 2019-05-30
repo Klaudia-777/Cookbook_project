@@ -21,20 +21,20 @@ public class FilterRecipesActionListener implements ActionListener {
             "sniadania",
             "fast-food",
             "przekaski",
-            "ciasta",
             "ciastka",
+            "ciasteczka",
             "desery"});
 
 
     /**
-     *  CREATING GUI FOR FILTERING FRAME
+     * CREATING GUI FOR FILTERING FRAME
      */
 
 
     void createAndShowGUIForParsedRecipe(ChooseAnOptionActionListener chooseAnOptionActionListener) {
 
         GridLayout gridLayout = new GridLayout(8, 1);
-        JPanel jPanel =new ImagePanel("picFromWebsite.jpg");
+        JPanel jPanel = new ImagePanel("picFromWebsite.jpg");
         jPanel.setLayout(gridLayout);
 
         filterButton.addActionListener(chooseAnOptionActionListener);
@@ -61,13 +61,12 @@ public class FilterRecipesActionListener implements ActionListener {
                 filterButton
         }));
 
-        jf.getContentPane().add(jPanel, BorderLayout.CENTER);
-        service.setJFrame(jf);
-        jf.setSize(400, 400);
+        service.setJFrame(jf, true, false, 400, 400,
+                800, 350,true, Arrays.asList(new JComponent[]{jPanel}));
     }
 
     /**
-     *  PERFORMING ACTION FROM FILTERS
+     * PERFORMING ACTION FROM FILTERS
      */
 
     public void actionPerformed(ActionEvent e) {
@@ -75,16 +74,16 @@ public class FilterRecipesActionListener implements ActionListener {
         cookbookDBService.createTables();
         String category = filterByCategory.getSelectedItem().toString();
 
-        if(!category.equals("") && filterByIngridient.getText().equals("")){
+        if (!category.equals("") && filterByIngridient.getText().equals("")) {
             cookbookDBService.filterRecipesByCategory(category);
 //        }else  if (category.equals("") && !filterByIngridient.getText().equals("")){
 //            cookbookDBService.filterRecipesByIngridients(category);
-        }else if(!category.equals("") && !filterByIngridient.getText().equals("")){
+        } else if (!category.equals("") && !filterByIngridient.getText().equals("")) {
             cookbookDBService.filterByCategoriesAndIngridients(
                     category,
                     filterByIngridient.getText()
             );
-        }else{
+        } else {
             service.setExceptionFrame("You need to fill at least one field!");
         }
         cookbookDBService.closeConnection();

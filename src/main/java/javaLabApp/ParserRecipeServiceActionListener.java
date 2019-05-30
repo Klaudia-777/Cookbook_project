@@ -18,15 +18,15 @@ import java.util.stream.Collectors;
 
 public class ParserRecipeServiceActionListener implements ActionListener {
     private CookbookDBService cookbookDBService = new CookbookDBService();
-
-    private List<String> usedUrls= new ArrayList<>();
+    private List<String> parsedRecipes = new ArrayList<>();
+    private List<String> usedUrls = new ArrayList<>();
     private Util service = new Util();
     private JTextField textField = new JTextField();
     JButton parseRecipeButton = new JButton("Add");
 
     /**
-     *  INSERTING RECIPE TO DATABASE
-     *  FROM URL
+     * INSERTING RECIPE TO DATABASE
+     * FROM URL
      */
 
     private ParserRecipeServiceActionListener insertRecipeToDB(String urlToCheck) {
@@ -47,13 +47,13 @@ public class ParserRecipeServiceActionListener implements ActionListener {
                         parseCategory(urlToCheck),
                         parseImageUrl(urlToCheck),
                         parseInstructionsFromWebsite(urlToCheck)));
-                if(!usedUrls.contains(urlToCheck)){
-                for (String ingridient : parseIngridientsFromWebsite(urlToCheck)) {
-                    cookbookDBService.insertDataIntoIngridientsTable(Arrays.asList(
-                            ingridient,
-                            parseRecipeNameFromWebsite(urlToCheck)
-                    ));
-                }
+                if (!usedUrls.contains(urlToCheck)) {
+                    for (String ingridient : parseIngridientsFromWebsite(urlToCheck)) {
+                        cookbookDBService.insertDataIntoIngridientsTable(Arrays.asList(
+                                ingridient,
+                                parseRecipeNameFromWebsite(urlToCheck)
+                        ));
+                    }
                 }
 //              cookbookDBService.dropRow();
 
@@ -67,7 +67,7 @@ public class ParserRecipeServiceActionListener implements ActionListener {
                 e.printStackTrace();
             }
         } else {
-           service.setExceptionFrame("Wrong format of URL!");
+            service.setExceptionFrame("Wrong format of URL!");
         }
         return this;
     }
@@ -83,7 +83,6 @@ public class ParserRecipeServiceActionListener implements ActionListener {
                 .select("title").first()
                 .text();
 
-        //        System.out.println(title);
         return title;
     }
 
@@ -105,7 +104,6 @@ public class ParserRecipeServiceActionListener implements ActionListener {
                 .attr("abs:href")
                 .substring(33);
         category = category.substring(0, category.indexOf('/'));
-//        System.out.println(category);
         return category;
     }
 
@@ -114,7 +112,7 @@ public class ParserRecipeServiceActionListener implements ActionListener {
      */
 
     List<String> parseIngridientsFromWebsite(String websiteAddress) throws IOException {
-        List<String> e = Jsoup.connect(websiteAddress).get()
+        List<String> ingridients = Jsoup.connect(websiteAddress).get()
                 .select("body")
                 .select("main")
                 .select("content").first()
@@ -124,11 +122,9 @@ public class ParserRecipeServiceActionListener implements ActionListener {
                 .stream()
                 .flatMap(n -> n.select("li").stream())
                 .map(Element::text)
-                .collect(Collectors.toList());   // zajebioza, kazdy skladnik osobno
+                .collect(Collectors.toList());
 
-
-//        e.forEach(System.out::println);
-        return e;
+        return ingridients;
     }
 
     /**
@@ -165,6 +161,9 @@ public class ParserRecipeServiceActionListener implements ActionListener {
                 .select("div").first()
                 .select("div").first()
                 .select("img").attr("abs:src");
+
+        parsedRecipes.add(imageUrl);
+        System.out.println(parsedRecipes.get(0));
 //        System.out.println(imageUrl);
         return imageUrl;
     }
@@ -194,9 +193,8 @@ public class ParserRecipeServiceActionListener implements ActionListener {
                 parseRecipeButton
         }));
 
-        jf.getContentPane().add(jPanel, BorderLayout.CENTER);
-        service.setJFrame(jf);
-        jf.setSize(400, 400);
+        service.setJFrame(jf, true, false, 400, 400,
+                800, 350, false, Arrays.asList(new JComponent[]{jPanel}));
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -231,6 +229,6 @@ public class ParserRecipeServiceActionListener implements ActionListener {
 //        for (String url:lista) {
 //            insertRecipeToDB(url);
 //        }
-     //   cookbookDBService.dropRow();
+        //   cookbookDBService.dropRow();
     }
 }

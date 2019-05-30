@@ -50,16 +50,9 @@ public class InitView {
         jPanel.setLayout(null);
 
         setPane(jPanel);
-        jf.getContentPane().add(jPanel);
+        service.setJFrame(jf,false,false,400,400,
+                800,350,false,Arrays.asList(new JComponent[]{jPanel}));
 
-        jf.pack();
-        jf.setVisible(true);
-        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        jf.setSize(400, 400);
-        jf.setLocation(dim.width / 2 - jf.getSize().width / 2, dim.height / 2 - jf.getSize().height / 2);
-        jf.setResizable(false);
     }
 
     private InitView() {

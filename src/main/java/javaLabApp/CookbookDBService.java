@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CookbookDBService {
@@ -204,8 +205,8 @@ public class CookbookDBService {
                     "from recipes " +
                     "where category = '" + categoryCriteria + "';");
 
-//            GridLayout gridLayout = new GridLayout(Integer.parseInt(rsRecipes.getString("count")), 1);
-//            jPanel.setLayout(gridLayout);
+            GridLayout gridLayout = new GridLayout(Integer.parseInt(rsRecipes.getString("count")), 1);
+            jPanel.setLayout(gridLayout);
 
             rsRecipes = stat.executeQuery("select *" +
                     "from recipes " +
@@ -215,17 +216,58 @@ public class CookbookDBService {
                 chooseRecipe=new JButton(rsRecipes.getString("name"));
                 chooseRecipe.addActionListener(new FinalRecipeViewActionListener());
                 jPanel.add(chooseRecipe);
-                //System.out.println("name = " + rsRecipes.getString("name") + ",  " + "\n");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        jf.getContentPane().add(jPanel, BorderLayout.CENTER);
-        service.setJFrame(jf);
-        jf.setSize(500, 500);
-        jf.setLocation(1300,0);
+        service.setJFrame(jf,true,true,0,0,
+                800,350,true,Arrays.asList(new JComponent[]{jPanel}));
     }
+
+    /**
+     *  FILTERING RECIPES BY CATEGORY AND ALSO INGRIDIENT
+     */
+
+    void filterByCategoriesAndIngridients(String categoryCriteria, String ingridientCriteria) {
+        JFrame jf = new JFrame("Choose a dish");
+        JPanel jPanel = new JPanel();
+        jPanel.setBackground(Color.yellow);
+
+        try {
+            rsRecipes = stat.executeQuery("select count(*) as 'count' " +
+                    "from recipes " +
+                    "inner join ingridients " +
+                    "on recipes.name=ingridients.recipes_name " +
+                    "where ingridients.name " +
+                    "LIKE '%" + ingridientCriteria + "%'" +
+                    "and recipes.category = '" + categoryCriteria + "';");
+
+            GridLayout gridLayout = new GridLayout(Integer.parseInt(rsRecipes.getString("count")), 1);
+            jPanel.setLayout(gridLayout);
+
+
+            rsRecipes = stat.executeQuery("select *" +
+                    "from recipes " +
+                    "inner join ingridients " +
+                    "on recipes.name=ingridients.recipes_name " +
+                    "where ingridients.name " +
+                    "LIKE '%" + ingridientCriteria + "%'" +
+                    "and recipes.category = '" + categoryCriteria + "';");
+
+
+            while (rsRecipes.next()) {
+                chooseRecipe=new JButton(rsRecipes.getString("name"));
+                chooseRecipe.addActionListener(new FinalRecipeViewActionListener());
+                jPanel.add(chooseRecipe);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        service.setJFrame(jf,true,true,400,500,
+                800,350,true, Arrays.asList(new JComponent[]{jPanel}));
+    }
+
 
     /**
      *  FILTERING RECIPES BY INGRIDIENT ONLY (FOR TESTS)
@@ -259,39 +301,7 @@ public class CookbookDBService {
 //        jf.setLocation(1300,0);
 //    }
 
-    /**
-     *  FILTERING RECIPES BY CATEGORY AND ALSO INGRIDIENT
-     */
 
-
-    void filterByCategoriesAndIngridients(String categoryCriteria, String ingridientCriteria) {
-        JFrame jf = new JFrame("Choose a dish");
-        JPanel jPanel = new JPanel();
-        jPanel.setBackground(Color.yellow.darker());
-
-        try {
-            rsRecipes = stat.executeQuery("select recipes.name " +
-                    "from recipes " +
-                    "inner join ingridients " +
-                    "on recipes.name=ingridients.recipes_name " +
-                    "where ingridients.name " +
-                    "LIKE '%" + ingridientCriteria + "%'" +
-                    "and recipes.category = '" + categoryCriteria + "'" +
-                    "group by recipes.name;");
-
-            while (rsRecipes.next()) {
-                chooseRecipe=new JButton(rsRecipes.getString("name"));
-                chooseRecipe.addActionListener(new FinalRecipeViewActionListener());
-                jPanel.add(chooseRecipe);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        jf.getContentPane().add(jPanel, BorderLayout.CENTER);
-        service.setJFrame(jf);
-        jf.setSize(500, 500);
-        jf.setLocation(1300,0);
-    }
 
 
     /**

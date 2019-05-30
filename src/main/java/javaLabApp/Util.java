@@ -2,16 +2,17 @@ package javaLabApp;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 
 /**
- *  SET OF UNIVERSAL FUNCTIONS
- *  USED IN THE WHOLE PROJECT
+ * SET OF UNIVERSAL FUNCTIONS
+ * USED IN THE WHOLE PROJECT
  */
 
 class Util {
 
-    void setButtonColor(JButton button,Color color){
+    void setButtonColor(JButton button, Color color) {
         button.setBackground(color);
         button.setOpaque(true);
     }
@@ -21,13 +22,27 @@ class Util {
         component.setFont(namelabelFont);
     }
 
-    void setJFrame(JFrame jframe) {
-        jframe.pack();
+    void setJFrame(JFrame jframe, boolean dispose,
+                   boolean pack, int width, int height,
+                   int x, int y,
+                   boolean setResizable, List<JComponent> componentList) {
+
         jframe.setVisible(true);
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        jframe.setLocation(dim.width / 2 - jframe.getSize().width / 2, dim.height / 2 - jframe.getSize().height / 2);
-        jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        jframe.setResizable(true);
+        jframe.setLocation(x, y);
+        jframe.setResizable(setResizable);
+        if (dispose)
+            jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        else
+            jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        if (!componentList.isEmpty()){
+            for (JComponent com : componentList) {
+                jframe.add(com);
+            }
+        }
+        if (pack) jframe.pack();
+        else if (!pack) {
+            jframe.setSize(width, height);
+        }
     }
 
     void addToJPanel(JPanel jPanel, List<JComponent> componentList) {
@@ -42,15 +57,14 @@ class Util {
         }
     }
 
-    void setExceptionFrame(String message){
+    void setExceptionFrame(String message) {
         JFrame wrongUrlFrame = new JFrame();
 
         JLabel label = new JLabel(message);
         label.setForeground(Color.red);
         setFont(label);
-
-        wrongUrlFrame.getContentPane().add(label);
-        wrongUrlFrame.setSize(300, 100);
-        setJFrame(wrongUrlFrame);
+        label.setBackground(Color.BLACK);
+        setJFrame(wrongUrlFrame, true, true, 300, 100,
+                900, 500, false, Arrays.asList(new JComponent[]{label}));
     }
 }

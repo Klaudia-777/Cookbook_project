@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 
 public class ChooseAnOptionActionListener implements ActionListener {
     private ParserRecipeServiceActionListener parserRecipeService = new ParserRecipeServiceActionListener();
-//    private OwnRecipeServiceActionListener ownRecipeService = new OwnRecipeServiceActionListener();
     private FilterRecipesActionListener filterRecipesService = new FilterRecipesActionListener();
 
     ChooseAnOptionActionListener(InitView initView) {
