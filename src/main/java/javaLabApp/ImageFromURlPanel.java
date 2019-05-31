@@ -26,12 +26,15 @@ public class ImageFromURlPanel extends JPanel {
             System.err.println("Blad odczytu obrazka");
             e.printStackTrace();
         }
+        JLabel jl = new JLabel();
+        jl.setIcon(new ImageIcon(image));
+        this.add(jl,BorderLayout.CENTER);
 
     }
 
-    @Override
-    public void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(image, 0, 0, this);
-    }
+//    @Override
+//    public void paintComponent(Graphics g) {
+//        Graphics2D g2d = (Graphics2D) g;
+//        g2d.drawImage(image, 0, 50, this);
+//    }
 }

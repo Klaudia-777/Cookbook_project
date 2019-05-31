@@ -55,14 +55,19 @@ public class CookbookDBService {
         }
     }
 
-    public void dropRow() {
+    /**
+     * DROPPING ROWS
+     * FOR TESTS MOSTLY
+     */
+
+    public  void dropRow() {
         try {
             stat = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         try {
-            stat.executeUpdate("delete from recipes where name like '%hurro%';");
+            stat.executeUpdate("delete from recipes where name like 'Picatta%';");
         } catch (SQLException e) {
             e.printStackTrace();
         }
