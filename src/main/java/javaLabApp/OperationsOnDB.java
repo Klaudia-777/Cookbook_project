@@ -1,6 +1,6 @@
 package javaLabApp;
 
-public class Operation {
+public class OperationsOnDB {
     private static CookbookDBService cookbookDBService = new CookbookDBService();
 
     public static void main(String[] args) {

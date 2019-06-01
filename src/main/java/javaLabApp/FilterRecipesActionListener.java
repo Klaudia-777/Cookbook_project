@@ -62,7 +62,7 @@ public class FilterRecipesActionListener implements ActionListener {
         }));
 
         service.setJFrame(jf, true, false, 400, 400,
-                800, 350,true, Arrays.asList(new JComponent[]{jPanel}));
+                800, 350,true,jPanel);
     }
 
     /**
@@ -75,18 +75,15 @@ public class FilterRecipesActionListener implements ActionListener {
         String category = filterByCategory.getSelectedItem().toString();
 
         if (!category.equals("") && filterByIngridient.getText().equals("")) {
+            Logging.getLogger().info("Filtering by category.");
             cookbookDBService.filterRecipesByCategory(category);
-//        }else  if (category.equals("") && !filterByIngridient.getText().equals("")){
-//            cookbookDBService.filterRecipesByIngridients(category);
         } else if (!category.equals("") && !filterByIngridient.getText().equals("")) {
+            Logging.getLogger().info("Filtering by category and ingridient.");
             cookbookDBService.filterByCategoriesAndIngridients(
                     category,
                     filterByIngridient.getText()
             );
-        } else {
-            service.setExceptionFrame("You need to fill at least one field!");
         }
         cookbookDBService.closeConnection();
-
     }
 }

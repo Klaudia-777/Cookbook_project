@@ -22,7 +22,12 @@ public class ParserRecipeServiceActionListener implements ActionListener {
     private List<String> usedUrls = new ArrayList<>();
     private Util service = new Util();
     private JTextField textField = new JTextField();
+    private boolean isURLWrong = false;
     JButton parseRecipeButton = new JButton("Add");
+
+    public boolean isURLWrong() {
+        return isURLWrong;
+    }
 
     /**
      * INSERTING RECIPE TO DATABASE
@@ -35,11 +40,8 @@ public class ParserRecipeServiceActionListener implements ActionListener {
         if (urlPattern.matcher(urlToCheck).matches()) {
 
             try {
-//                parseRecipeNameFromWebsite(urlToCheck);
-//                parseCategory(urlToCheck);
 
                 cookbookDBService.createConnection();
-//                cookbookDBService.dropTables();
                 cookbookDBService.createTables();
 
                 cookbookDBService.insertDataIntoRecipesTable(Arrays.asList(
@@ -55,19 +57,23 @@ public class ParserRecipeServiceActionListener implements ActionListener {
                         ));
                     }
                 }
-//              cookbookDBService.dropRow();
-
 
                 cookbookDBService.closeConnection();
                 usedUrls.add(urlToCheck);
 
+            }catch(NullPointerException npe){
+                Logging.getLogger().error(npe.getMessage());
             } catch (HttpStatusException h) {
+                Logging.getLogger().error("URL doesn't exist!");
                 service.setExceptionFrame("URL doesn't exist!");
             } catch (IOException e) {
-                e.printStackTrace();
+                Logging.getLogger().error(e.getMessage());
             }
+
         } else {
+            Logging.getLogger().error("Wrong format of URL!");
             service.setExceptionFrame("Wrong format of URL!");
+            isURLWrong = true;
         }
         return this;
     }
@@ -111,7 +117,7 @@ public class ParserRecipeServiceActionListener implements ActionListener {
      * PARSING INGRIDIENTS
      */
 
-    List<String> parseIngridientsFromWebsite(String websiteAddress) throws IOException {
+    List<String> parseIngridientsFromWebsite(String websiteAddress) throws IOException,NullPointerException {
         List<String> ingridients = Jsoup.connect(websiteAddress).get()
                 .select("body")
                 .select("main")
@@ -144,8 +150,6 @@ public class ParserRecipeServiceActionListener implements ActionListener {
         StringBuilder sb = new StringBuilder();
         sb.append(String.join("\n", instructions)).append("\n");
 
-//        System.out.println(sb.toString() + "\n");
-
         return sb.toString();
     }
 
@@ -163,8 +167,6 @@ public class ParserRecipeServiceActionListener implements ActionListener {
                 .select("img").attr("abs:src");
 
         parsedRecipes.add(imageUrl);
-        System.out.println(parsedRecipes.get(0));
-//        System.out.println(imageUrl);
         return imageUrl;
     }
 
@@ -194,13 +196,16 @@ public class ParserRecipeServiceActionListener implements ActionListener {
         }));
 
         service.setJFrame(jf, true, false, 400, 400,
-                800, 350, false, Arrays.asList(new JComponent[]{jPanel}));
+                800, 350, false, jPanel);
     }
 
     public void actionPerformed(ActionEvent e) {
-
+        Logging.getLogger().info("Adding recipe to base...");
         insertRecipeToDB(textField.getText());
-//
+        if (!isURLWrong) {
+            Logging.getLogger().info("Recipe added.");
+            isURLWrong=false;
+        }
 //        List<String> lista= Arrays.asList(
 //            "https://kuchnialidla.pl/Warzywa-pieczone-na-grillu",
 //            "https://kuchnialidla.pl/koszyczki-z-ciasta-filo-z-kremem-i-owocami",

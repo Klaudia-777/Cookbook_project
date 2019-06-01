@@ -25,20 +25,17 @@ class Util {
     void setJFrame(JFrame jframe, boolean dispose,
                    boolean pack, int width, int height,
                    int x, int y,
-                   boolean setResizable, List<JComponent> componentList) {
+                   boolean setResizable, JComponent component) {
 
         jframe.setVisible(true);
         jframe.setLocation(x, y);
         jframe.setResizable(setResizable);
+        jframe.add(component);
         if (dispose)
             jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         else
             jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        if (!componentList.isEmpty()){
-            for (JComponent com : componentList) {
-                jframe.add(com);
-            }
-        }
+
         if (pack) jframe.pack();
         else if (!pack) {
             jframe.setSize(width, height);
@@ -65,6 +62,6 @@ class Util {
         setFont(label);
         label.setBackground(Color.BLACK);
         setJFrame(wrongUrlFrame, true, true, 300, 100,
-                900, 500, false, Arrays.asList(new JComponent[]{label}));
+                900, 500, false, label);
     }
 }

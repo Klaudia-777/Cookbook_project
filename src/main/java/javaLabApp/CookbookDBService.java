@@ -15,6 +15,7 @@ public class CookbookDBService {
     private static Connection conn = null;
     private static Statement stat = null;
     private static ResultSet rsRecipes = null;
+    FinalRecipeViewActionListener finalRecipeViewActionListener = new FinalRecipeViewActionListener(this);
 
     /**
      * CREATE CONNECTION WITH DATABASE
@@ -23,21 +24,18 @@ public class CookbookDBService {
     void createConnection() {
         try {
             Class.forName("org.sqlite.JDBC");
-//            System.out.println("INFO: Driver was found.");
         } catch (ClassNotFoundException e) {
-//            System.err.println("ERROR: You should download driver first:  https://bitbucket.org/xerial/sqlite-jdbc");
             System.exit(1);
         }
         try {
             conn = DriverManager.getConnection("jdbc:sqlite:file.db");
-//            System.out.println("INFO: Connection was established.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     *  DELETING TABLES
+     * DELETING TABLES
      */
 
     public void dropTables() {
@@ -60,14 +58,14 @@ public class CookbookDBService {
      * FOR TESTS MOSTLY
      */
 
-    public  void dropRow() {
+    public void dropRow() {
         try {
             stat = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         try {
-            stat.executeUpdate("delete from recipes where name like 'Picatta%';");
+            stat.executeUpdate("delete from recipes where name like '%churros%';");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -130,7 +128,7 @@ public class CookbookDBService {
     }
 
     /**
-     *  INSERTING DATA INTO INGRIDIENTS TABLE
+     * INSERTING DATA INTO INGRIDIENTS TABLE
      */
 
     void insertDataIntoIngridientsTable(List<String> data) {
@@ -153,58 +151,14 @@ public class CookbookDBService {
         }
     }
 
-    /**
-     *  READING DATA (FOR TESTS MOSTLY)
-     */
-
-//    void readDataRecipes() {
-//        try {
-//            stat = conn.createStatement();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            rsRecipes = stat.executeQuery("select * from recipes;");
-//            while (rsRecipes.next()) {
-//                System.out.println("id= " + rsRecipes.getString("id") + ",  " + "\n");
-//                System.out.println("name = " + rsRecipes.getString("name") + ",  " + "\n");
-//                System.out.println("category = " + rsRecipes.getString("category") + "\n");
-//                System.out.println("image url = " + rsRecipes.getString("urlAddress") + "\n");
-//                System.out.println("instructions = " + rsRecipes.getString("instructions") + "\n");
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//  void readDataIngridients() {
-//        try {
-//            stat = conn.createStatement();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            rsIngridients = stat.executeQuery("select * from ingridients;");
-//            while (rsIngridients.next()) {
-//                System.out.println("id= " + rsIngridients.getString("id") + ",  " + "\n");
-//                System.out.println("name = " + rsIngridients.getString("name") + ",  " + "\n");
-//                System.out.println("category = " + rsIngridients.getString("recipes_name") + "\n");
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     /**
-     *  FILTERING RECIPES BY CATEGORY
+     * FILTERING RECIPES BY CATEGORY
      */
 
     void filterRecipesByCategory(String categoryCriteria) {
         JFrame jf = new JFrame("Choose a dish");
         JPanel jPanel = new JPanel();
-        jPanel.setBackground(Color.yellow);
         try {
             rsRecipes = stat.executeQuery("select count(*)as 'count'" +
                     "from recipes " +
@@ -218,23 +172,26 @@ public class CookbookDBService {
                     "where category = '" + categoryCriteria + "';");
 
             while (rsRecipes.next()) {
-                chooseRecipe=new JButton(rsRecipes.getString("name"));
-                chooseRecipe.addActionListener(new FinalRecipeViewActionListener());
+                chooseRecipe = new JButton(rsRecipes.getString("name"));
+                chooseRecipe.addActionListener(finalRecipeViewActionListener);
                 jPanel.add(chooseRecipe);
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logging.getLogger().error(e.getMessage());
         }
-        service.setJFrame(jf,true,true,0,0,
-                800,350,true,Arrays.asList(new JComponent[]{jPanel}));
+        Logging.getLogger().info("Choose a dish menu opened");
+
+        service.setJFrame(jf, true, false, 500, 800,
+                1400, 0, true, jPanel);
     }
 
     /**
-     *  FILTERING RECIPES BY CATEGORY AND ALSO INGRIDIENT
+     * FILTERING RECIPES BY CATEGORY AND ALSO INGRIDIENT
      */
 
     void filterByCategoriesAndIngridients(String categoryCriteria, String ingridientCriteria) {
+
         JFrame jf = new JFrame("Choose a dish");
         JPanel jPanel = new JPanel();
         jPanel.setBackground(Color.yellow);
@@ -262,62 +219,29 @@ public class CookbookDBService {
 
 
             while (rsRecipes.next()) {
-                chooseRecipe=new JButton(rsRecipes.getString("name"));
-                chooseRecipe.addActionListener(new FinalRecipeViewActionListener());
+                chooseRecipe = new JButton(rsRecipes.getString("name"));
+                chooseRecipe.addActionListener(finalRecipeViewActionListener);
                 jPanel.add(chooseRecipe);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logging.getLogger().error(e.getMessage());
         }
-        service.setJFrame(jf,true,true,400,500,
-                800,350,true, Arrays.asList(new JComponent[]{jPanel}));
+
+        service.setJFrame(jf, true, false, 500, 800,
+                1400, 0, true,jPanel);
+
+        Logging.getLogger().info("Choose a dish menu opened.");
     }
 
-
     /**
-     *  FILTERING RECIPES BY INGRIDIENT ONLY (FOR TESTS)
+     * FILTERING RECIPES BY NAME
+     * (PARSING RECIPE FROM CONNECTED BUTTON)
+     * -> FinalRecipeViewActionListener
      */
 
 
-//    void filterRecipesByIngridients(String ingridientCriteria) {
-//        JFrame jf = new JFrame("Choose a dish");
-//
-//        JPanel jPanel = new JPanel();
-//
-//        try {
-//            rsRecipes = stat.executeQuery("select recipes.name " +
-//                    "from recipes " +
-//                    "inner join ingridients " +
-//                    "on recipes.name=ingridients.recipes_name " +
-//                    "where ingridients.name " +
-//                    "LIKE '%" + ingridientCriteria + "%';");
-//
-//            while (rsRecipes.next()) {
-//                chooseRecipe=new JButton(rsRecipes.getString("name"));
-//                chooseRecipe.addActionListener(new FinalRecipeViewActionListener());
-//                jPanel.add(chooseRecipe);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        jf.getContentPane().add(jPanel, BorderLayout.CENTER);
-//        service.setJFrame(jf);
-//        jf.setSize(500, 500);
-//        jf.setLocation(1300,0);
-//    }
-
-
-
-
-    /**
-     *  FILTERING RECIPES BY NAME
-     *  (PARSING RECIPE FROM CONNECTED BUTTON)
-     *  -> FinalRecipeViewActionListener
-     */
-
-
-    List<String> filterByName(String name){
-        List<String> dataPreparedToFinalFrame=new ArrayList<>();
+    List<String> filterByName(String name) {
+        List<String> dataPreparedToFinalFrame = new ArrayList<>();
         try {
             rsRecipes = stat.executeQuery("select * " +
                     "from recipes " +
@@ -331,13 +255,14 @@ public class CookbookDBService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        List<String> remembered = new ArrayList<>();
         try {
             ResultSet rsIngridients = stat.executeQuery("select * " +
                     "from ingridients " +
                     "where recipes_name =  '" + name + "';");
-            while (rsRecipes.next()) {
-                dataPreparedToFinalFrame.add(rsIngridients.getString("name"));
+
+            while (rsIngridients.next()) {
+                    dataPreparedToFinalFrame.add(rsIngridients.getString("name"));
             }
 
         } catch (SQLException e) {
@@ -347,14 +272,13 @@ public class CookbookDBService {
     }
 
     /**
-     *  CLOSING CONNECTION
+     * CLOSING CONNECTION
      */
 
 
     void closeConnection() {
         try {
             conn.close();
-//            System.out.println("INFO: Connection was closed.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
